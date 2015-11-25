@@ -3,10 +3,10 @@ angular.module('ng-daterangepicker', [])
 .run(['$templateCache', function($templateCache) {
   $templateCache.put('ngdatetimepicker/datepicker.html', '<div id="datepicker-{{ name }}" class="daterangepicker dropdown-menu">\n' +
     '<div class="calendar left">\n' +
-    '<ng-calendar name="{{ name }}-left" select-callback="dateCtrl.se+lectStartDate(date)" active-callback="dateCtrl.isActive(day)"></ng-calendar>' +
+    '<ng-calendar name="{{ name }}-left" ng-model="leftDate"  active-callback="dateCtrl.isActive(day)"></ng-calendar>' +
     '</div>\n' +
     '<div class="calendar right" ng-if="dateCtrl.isRange()">\n' +
-    '<ng-calendar name="{{ name }}-right" select-callback="selectEndDate(date)" active-callback="isActive(day)"></ng-calendar>' +
+    '<ng-calendar name="{{ name }}-right" ng-model="rightDate" active-callback="isActive(day)"></ng-calendar>' +
     '</div>\n' +
     '<div class="ranges">\n' +
     '<div class="range_inputs">\n' +

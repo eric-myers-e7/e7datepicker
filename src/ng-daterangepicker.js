@@ -43,6 +43,7 @@
   'use strict';
 
   function CalendarController(scope, element, attr, ctrls) {
+    this.id = 'calCtrl'
     this.selected = null;
     this.today = moment();
     this.viewDate = moment();
@@ -131,6 +132,31 @@
     };
   }
 
+  function DatePickerController(scope, element, attr, ctrls) {
+    this.id = 'dateCtrl';
+    this.selectedDate = {};
+    this.viewDate = {};
+
+    this.isHighlighted = function(day) {
+      //if range select all between range
+      if (scope.range === true) {
+        return (day > this.viewDate.startDate || day < this.viewDate.endDate);
+      }
+      return false;
+    };
+
+    scope.$watch('leftDate', function () { 
+      this.selectedDate.start = this.leftDate;
+      if(!this.rightDate) {
+        this.selectedDate.end = this.rightDate;
+      }
+    }.bind(this));
+    
+    scope.$watch('rightDate', function () {
+      this.selectedDate.end = this.rightDate; 
+    }.bind(this));
+
+  }
 
   function createDateType(time, local) {
     time = time || false;
@@ -188,101 +214,131 @@
   angular.module('ng-datepicker', [])
     .directive('ngDatepicker', ['$templateCache', '$compile', '$window', function($templateCache, $compile, $window) {
       return {
-        require: '?ngModel',
+        require: '[dateCtrl, ?ngModel]',
         restrict: 'A',
+        controller: 'DatePickerController as dateCtrl',
         scope: {
           name: '@ngDatepicker'
         },
         link: function(scope, element, attr, ctrl) {
+          var datepicker = ctrl;
           this.input = element;
           var template = $templateCache.get('ngdatetimepicker/datepicker.html');
           $compile(template)(scope);
 
-          this.popover = angular.element(template);
+          var popover = angular.element(template);
+          popover.appendTo('body');
+          var datepicker = new DatePicker(element, popover);
 
-          var touchSupported = 'ontouchstart' in window,
-            mousedownEvent = 'mousedown' + (touchSupported ? ' touchstart' : ''),
-            mousemoveEvent = 'mousemove.ngdatepicker' + (touchSupported ? ' touchmove.clockpicker' : ''),
-            mouseupEvent = 'mouseup.ngdatepicker' + (touchSupported ? ' touchend.clockpicker' : '');
-
-          this.show = function() {
-            if (isShowing) return;
-            $window.document.on('focusin.ngdatepicker click.ngdatepicker mousedown.ngdatepicker touchend.ngdatepicker mouseup.ngdatepicker',
-              $proxy(function(e) {
-                if (
-                  target.closest(this.input).length ||
-                  target.closest(this.popover).length ||
-                  target.closest('.calendar-table').length
-                ) return;
-              }, this));
-          };
-
-          this.position = function() {
-            var css = {
-              top: 0,
-              right: auto,
-              left: 0
-            };
-            
-            var parentOffset = {
-              top: 0,
-              left: 0
-            };
-
-            css.top = vertical();
-            angular.extend(css, horizontal());
-
-            var horizontal = function() {
-              var pos = {};
-              switch (scope.position.subString(3)) {
-                case 'left':
-                  pos = {
-                    right: this.container.offset().left < 0 ? 'auto' : $(window).width() - this.element.offset().left - this.element.outerWidth(),
-                    left: this.container.offset().left < 0 ? 9 : 'auto'
-                  };
-                  break;
-                case 'center':
-                  pos = {
-                    left: this.container.offset().left < 0 ? 9 : this.element.offset().left - parentOffset.left + this.element.outerWidth() / 2 - this.container.outerWidth() / 2,
-                  };
-                  break;
-                default:
-                  var containerPastRight = this.container.offset().left + this.container.outerWidth() > $(window).width();
-                  pos = {
-                    left: containerPastRight ? 'auto' : this.element.offset().left - parentOffset.left,
-                    right: containerPastRight ? 0 : css.right
-                  };
-              }
-              return pos;
-            }.bind(this);
-
-            var vertical = function() {
-              if (scope.positon.subString(0, 3) === 'top') {
-                this.container.addClass('dropup');
-                return this.element.offset().top - this.container.outerHeight() - parentOffset.top;
-              } else if (scope.positon.subString(0, 6) === 'bottom') {
-                return this.element.offset().top + this.element.outerHeight() - parentOffset.top;
-              }
-            }.bind(this);
-
-          };
         }
       };
     }])
 
   .directive('ngCalendar', ['$templateCache', function($templateCache, $compile, $window) {
     return {
-      require: '?ngDatepicker',
+      require: '[calCtrl, ?ngModel]',
       restrict: 'E',
       template: 'ngdatetimepicker/calendar.html',
       controller: 'CalendarController as calCtrl',
       scope: {
         name: '@',
-        selectCallback: '&',
         highlightCallback: '&'
       },
       link: function(scope, element, attr, ctrl) {}
     };
   }]);
 
-}());
+  var DatePicker = function(input, popover) {
+    this.input = input;
+    this.popover = popover;
+
+    this.show = function() {
+      if (isShowing) return;
+      $window.document.on('focusin.ngdatepicker click.ngdatepicker mousedown.ngdatepicker touchend.ngdatepicker mouseup.ngdatepicker [data-toggle=dropdown]',
+        $proxy(function(e) {
+          if (
+            target.closest(this.input).length ||
+            target.closest(this.popover).length ||
+            target.closest('.calendar-table').length
+          ) return;
+        }, this));
+
+      // Reposition the picker if the window is resized while it's open
+      $(window).on('resize.ngdatepicker', $.proxy(function(e) {
+        this.position(e);
+      }, this));
+
+      this.position();
+      this.popover.show();
+      this.isShowing = true;
+    };
+
+    this.hide = function() {
+      if (!this.isShowing) return;
+      $window.off('.ngdatepicker');
+      $window.document.off('ngdatepicker');
+      this.position();
+      this.popover.show();
+      this.popover.hide();
+      this.isShowing = false;
+    };
+
+    this.toggle = function(e) {
+      if (this.isShowing) {
+        this.hide();
+      } else {
+        this.show();
+      }
+    };
+
+    this.position = function(e) {
+      var css = {
+        top: 0,
+        right: auto,
+        left: 0
+      };
+
+      var parentOffset = {
+        top: 0,
+        left: 0
+      };
+
+      css.top = vertical();
+      angular.extend(css, horizontal());
+    };
+
+    var horizontal = function() {
+      var pos = {};
+      switch (scope.position.subString(3)) {
+        case 'left':
+          pos = {
+            right: this.container.offset().left < 0 ? 'auto' : $(window).width() - this.input.offset().left - this.input.outerWidth(),
+            left: this.container.offset().left < 0 ? 9 : 'auto'
+          };
+          break;
+        case 'center':
+          pos = {
+            left: this.container.offset().left < 0 ? 9 : this.input.offset().left - parentOffset.left + this.input.outerWidth() / 2 - this.container.outerWidth() / 2,
+          };
+          break;
+        default:
+          var containerPastRight = this.container.offset().left + this.container.outerWidth() > $(window).width();
+          pos = {
+            left: containerPastRight ? 'auto' : this.input.offset().left - parentOffset.left,
+            right: containerPastRight ? 0 : css.right
+          };
+      }
+      return pos;
+    }.bind(this);
+
+    var vertical = function() {
+      if (scope.positon.subString(0, 3) === 'top') {
+        this.container.addClass('dropup');
+        return this.input.offset().top - this.container.outerHeight() - parentOffset.top;
+      } else if (scope.positon.subString(0, 6) === 'bottom') {
+        return this.input.offset().top + this.input.outerHeight() - parentOffset.top;
+      }
+    }.bind(this);
+  };
+
+})();
