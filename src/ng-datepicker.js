@@ -43,7 +43,7 @@
   'use strict';
 
   function CalendarController(scope, element, attr, ctrls) {
-    this.id = 'calCtrl'
+    this.id = 'calCtrl';
     this.selected = null;
     this.today = moment();
     this.viewDate = moment();
@@ -145,51 +145,13 @@
       return false;
     };
 
-    scope.$watch('leftDate', function () { 
-      this.selectedDate.start = this.leftDate;
-      if(!this.rightDate) {
-        this.selectedDate.end = this.rightDate;
-      }
-    }.bind(this));
-    
-    scope.$watch('rightDate', function () {
-      this.selectedDate.end = this.rightDate; 
-    }.bind(this));
-
   }
 
   function createDateType(time, local) {
     time = time || false;
     local = local || false;
     return function(scope, element, attr, ctrls) {
-      var options = {
-        date: {
-          limit: {},
-          ranges: {},
-          autoclose: true,
-          military: false,
-          corner: 'bottom-left',
-          dropdowns: false,
-          exclusionCallback: null,
-          locale: {
-            format: 'mm/dd/yyy',
-            ranges: 'Custom Ranges',
-            monthsShort: moment.monthsShort(),
-            weekDaysMin: moment.weekDaysMin(),
-            dayOfWeek: 1
-          }
-        },
-        time: {
-          corner: 'bottom-left',
-          autoclose: true,
-          military: false,
-          locale: {
-            done: 'Done',
-            morning: 'AM',
-            afternoon: 'PM'
-          }
-        }
-      };
+      
 
       var currentStartDate = moment();
       var currentEndDate = moment();
@@ -221,15 +183,31 @@
           name: '@ngDatepicker'
         },
         link: function(scope, element, attr, ctrl) {
-          var datepicker = ctrl;
+          var dateCtrl = ctrl[0];
+          var modelCtrl = ctrl[1];
           this.input = element;
           var template = $templateCache.get('ngdatetimepicker/datepicker.html');
           $compile(template)(scope);
 
           var popover = angular.element(template);
           popover.appendTo('body');
-          var datepicker = new DatePicker(element, popover);
+          var datepicker = new DatePicker(element, popover, $window);
+          this.input.on('click.ngdatepicker', function () { datepicker.show(); });
+          scope.$watch('leftDate', function() {
+            if (options.range === true) {
+              dateCtrl.selectedDate.start = dateCtrl.leftDate;
+              if (!_.isEmpty(dateCtrl.rightDate)) {
+                dateCtrl.selectedDate.end = dateCtrl.rightDate;
+              }
+            } else {
+              dateCtrl.selectedDate = dateCtrl.leftDate;
+            }
+            datepicker.hide();
+          });
 
+          scope.$watch('rightDate', function() {
+            dateCtrl.selectedDate.end = dateCtrl.rightDate;
+          });
         }
       };
     }])
@@ -248,28 +226,28 @@
     };
   }]);
 
-  var DatePicker = function(input, popover) {
-    this.input = input;
-    this.popover = popover;
-
-    this.show = function() {
-      if (isShowing) return;
-      $window.document.on('focusin.ngdatepicker click.ngdatepicker mousedown.ngdatepicker touchend.ngdatepicker mouseup.ngdatepicker [data-toggle=dropdown]',
-        $proxy(function(e) {
-          if (
-            target.closest(this.input).length ||
-            target.closest(this.popover).length ||
-            target.closest('.calendar-table').length
-          ) return;
-        }, this));
-
+  var DatePicker = function(input, popover, $window) {
+    init();
+    var init = function () {
+      this.position();
       // Reposition the picker if the window is resized while it's open
       $(window).on('resize.ngdatepicker', $.proxy(function(e) {
         this.position(e);
       }, this));
 
-      this.position();
-      this.popover.show();
+      $window.document.on('focusin.ngdatepicker click.ngdatepicker mousedown.ngdatepicker touchend.ngdatepicker mouseup.ngdatepicker [data-toggle=dropdown]',
+        $proxy(function(e) {
+          if (
+            target.closest(input).length === 0 ||
+            target.closest(popover).length === 0 ||
+            target.closest('.calendar-table').length === 0
+          ) this.hide();
+        }.bind(this), this));
+    };
+
+    this.show = function() {
+      if (isShowing) return;
+      popover.show();
       this.isShowing = true;
     };
 
@@ -277,9 +255,7 @@
       if (!this.isShowing) return;
       $window.off('.ngdatepicker');
       $window.document.off('ngdatepicker');
-      this.position();
-      this.popover.show();
-      this.popover.hide();
+      popover.hide();
       this.isShowing = false;
     };
 
@@ -312,19 +288,19 @@
       switch (scope.position.subString(3)) {
         case 'left':
           pos = {
-            right: this.container.offset().left < 0 ? 'auto' : $(window).width() - this.input.offset().left - this.input.outerWidth(),
+            right: this.container.offset().left < 0 ? 'auto' : $(window).width() - input.offset().left - input.outerWidth(),
             left: this.container.offset().left < 0 ? 9 : 'auto'
           };
           break;
         case 'center':
           pos = {
-            left: this.container.offset().left < 0 ? 9 : this.input.offset().left - parentOffset.left + this.input.outerWidth() / 2 - this.container.outerWidth() / 2,
+            left: this.container.offset().left < 0 ? 9 : input.offset().left - parentOffset.left + input.outerWidth() / 2 - this.container.outerWidth() / 2,
           };
           break;
         default:
           var containerPastRight = this.container.offset().left + this.container.outerWidth() > $(window).width();
           pos = {
-            left: containerPastRight ? 'auto' : this.input.offset().left - parentOffset.left,
+            left: containerPastRight ? 'auto' : input.offset().left - parentOffset.left,
             right: containerPastRight ? 0 : css.right
           };
       }
@@ -334,9 +310,9 @@
     var vertical = function() {
       if (scope.positon.subString(0, 3) === 'top') {
         this.container.addClass('dropup');
-        return this.input.offset().top - this.container.outerHeight() - parentOffset.top;
+        return input.offset().top - this.container.outerHeight() - parentOffset.top;
       } else if (scope.positon.subString(0, 6) === 'bottom') {
-        return this.input.offset().top + this.input.outerHeight() - parentOffset.top;
+        return input.offset().top + input.outerHeight() - parentOffset.top;
       }
     }.bind(this);
   };

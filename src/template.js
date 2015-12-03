@@ -3,12 +3,12 @@ angular.module('ng-daterangepicker', [])
 .run(['$templateCache', function($templateCache) {
   $templateCache.put('ngdatetimepicker/datepicker.html', '<div id="datepicker-{{ name }}" class="daterangepicker dropdown-menu">\n' +
     '<div class="calendar left">\n' +
-    '<ng-calendar name="{{ name }}-left" ng-model="leftDate"  active-callback="dateCtrl.isActive(day)"></ng-calendar>' +
+    '<ng-calendar name="{{ name }}-left" ng-model="dateCtrl.leftDate"  active-callback="dateCtrl.isActive(day)"></ng-calendar>' +
     '</div>\n' +
     '<div class="calendar right" ng-if="dateCtrl.isRange()">\n' +
-    '<ng-calendar name="{{ name }}-right" ng-model="rightDate" active-callback="isActive(day)"></ng-calendar>' +
+    '<ng-calendar name="{{ name }}-right" ng-model="dateCtrl.rightDate" active-callback="dateCtrl.isActive(day)"></ng-calendar>' +
     '</div>\n' +
-    '<div class="ranges">\n' +
+    '<div class="ranges" ng-if="dateCtrl.isRange()">\n' +
     '<div class="range_inputs">\n' +
     '<ul ng-if="dateCtrl.hasRanges()" ng-repeat=" name, range in range"><li ng-click="dateCtrl.selectRange(range)">{{ name }}</li></ul>' +
     '<button class="applyBtn" disabled="disabled" type="button" ng-click="dateCtrl.apply()"></button> \n' +
@@ -46,7 +46,7 @@ angular.module('ng-daterangepicker', [])
           '<i class="{{ dateCtrl.timeIconClass }}"></i>\n' +
        '</div>\n' +
     '</div>\n' +
-    '<div class="calendar-table"><table classs="table-condensed>' +
+    '<div class="calendar-table"><table class="table-condensed>' +
     '<thead>' +
     '<tr>' +
     '<th></th>' +
