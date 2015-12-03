@@ -1,3 +1,4 @@
+
 /**
     * options: 
      { namespace: input.name,  "namespace for fired events"
@@ -42,7 +43,7 @@
 (function() {
   'use strict';
 
-  function CalendarController(scope, element, attr, ctrls) {
+  function CalendarController($scope, $element, $attrs, $transclude, $log) {
     this.id = 'calCtrl';
     this.selected = null;
     this.today = moment();
@@ -132,7 +133,7 @@
     };
   }
 
-  function DatePickerController(scope, element, attr, ctrls) {
+  function DatePickerController($scope, $element, $attrs, $transclude) {
     this.id = 'dateCtrl';
     this.selectedDate = {};
     this.viewDate = {};
@@ -147,51 +148,28 @@
 
   }
 
-  function createDateType(time, local) {
-    time = time || false;
-    local = local || false;
-    return function(scope, element, attr, ctrls) {
-      
-
-      var currentStartDate = moment();
-      var currentEndDate = moment();
-    };
-  }
-
-  function timeType(scope, element, attr, ctrls) {
-    var options = {
-      time: {
-        corner: 'bottom-left',
-        autoclose: true,
-        military: false,
-        locale: {
-          done: 'Done',
-          morning: 'AM',
-          afternoon: 'PM'
-        }
-      }
-    };
-  }
-
-  angular.module('ng-datepicker', [])
-    .directive('ngDatepicker', ['$templateCache', '$compile', '$window', function($templateCache, $compile, $window) {
+  angular.module('ngdatepicker', [])
+    .directive('ngdatepicker', ['$templateCache', '$compile', '$window', '$log', function($templateCache, $compile, $window, $log) {
       return {
-        require: '[dateCtrl, ?ngModel]',
+        require: 'ngModel',
         restrict: 'A',
-        controller: 'DatePickerController as dateCtrl',
+        controller: DatePickerController,
+        // controllerAs: 'dateCtrl',
         scope: {
-          name: '@ngDatepicker'
+          name: '@ngDatepicker',
+          options: '@'
         },
         link: function(scope, element, attr, ctrl) {
           var dateCtrl = ctrl[0];
           var modelCtrl = ctrl[1];
-          this.input = element;
+          var input = element;
           var template = $templateCache.get('ngdatetimepicker/datepicker.html');
           $compile(template)(scope);
+          $log.info('here');
 
           var popover = angular.element(template);
           popover.appendTo('body');
-          var datepicker = new DatePicker(element, popover, $window);
+          var datepicker = new DatePicker(input, popover, scope.options, $window);
           this.input.on('click.ngdatepicker', function () { datepicker.show(); });
           scope.$watch('leftDate', function() {
             if (options.range === true) {
@@ -212,12 +190,13 @@
       };
     }])
 
-  .directive('ngCalendar', ['$templateCache', function($templateCache, $compile, $window) {
+  .directive('ngCalendar', ['$templateCache', '$compile', '$window', function($templateCache, $compile, $window) {
     return {
       require: '[calCtrl, ?ngModel]',
       restrict: 'E',
       template: 'ngdatetimepicker/calendar.html',
-      controller: 'CalendarController as calCtrl',
+      controller: CalendarController,
+      controllerAs: 'calCtrl',
       scope: {
         name: '@',
         highlightCallback: '&'
@@ -226,24 +205,9 @@
     };
   }]);
 
-  var DatePicker = function(input, popover, $window) {
-    init();
-    var init = function () {
-      this.position();
-      // Reposition the picker if the window is resized while it's open
-      $(window).on('resize.ngdatepicker', $.proxy(function(e) {
-        this.position(e);
-      }, this));
-
-      $window.document.on('focusin.ngdatepicker click.ngdatepicker mousedown.ngdatepicker touchend.ngdatepicker mouseup.ngdatepicker [data-toggle=dropdown]',
-        $proxy(function(e) {
-          if (
-            target.closest(input).length === 0 ||
-            target.closest(popover).length === 0 ||
-            target.closest('.calendar-table').length === 0
-          ) this.hide();
-        }.bind(this), this));
-    };
+  function DatePicker (input, popover, options, $window) {
+    options = options || {};
+    options.position = options.position || 'bottomleft';
 
     this.show = function() {
       if (isShowing) return;
@@ -270,7 +234,7 @@
     this.position = function(e) {
       var css = {
         top: 0,
-        right: auto,
+        right: 'auto',
         left: 0
       };
 
@@ -285,7 +249,7 @@
 
     var horizontal = function() {
       var pos = {};
-      switch (scope.position.subString(3)) {
+      switch (options.position.substr(3)) {
         case 'left':
           pos = {
             right: this.container.offset().left < 0 ? 'auto' : $(window).width() - input.offset().left - input.outerWidth(),
@@ -308,13 +272,32 @@
     }.bind(this);
 
     var vertical = function() {
-      if (scope.positon.subString(0, 3) === 'top') {
+      if (options.position.substr(0, 3) === 'top') {
         this.container.addClass('dropup');
         return input.offset().top - this.container.outerHeight() - parentOffset.top;
-      } else if (scope.positon.subString(0, 6) === 'bottom') {
+      } else if (options.position.substr(0, 6) === 'bottom') {
         return input.offset().top + input.outerHeight() - parentOffset.top;
       }
     }.bind(this);
-  };
+
+    var init = function () {
+      this.position();
+      // Reposition the picker if the window is resized while it's open
+      $(window).on('resize.ngdatepicker', $.proxy(function(e) {
+        this.position(e);
+      }, this));
+
+      $window.document.on('focusin.ngdatepicker click.ngdatepicker mousedown.ngdatepicker touchend.ngdatepicker mouseup.ngdatepicker [data-toggle=dropdown]',
+        $proxy(function(e) {
+          if (
+            target.closest(input).length === 0 ||
+            target.closest(popover).length === 0 ||
+            target.closest('.calendar-table').length === 0
+          ) this.hide();
+        }.bind(this), this));
+    }.bind(this);
+
+   init();
+  }
 
 })();
