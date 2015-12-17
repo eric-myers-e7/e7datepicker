@@ -13,7 +13,8 @@ module.exports = function(grunt) {
        },
        dist: {
           files: {
-             'dist/angular-daterangepicker-enhanced.min.js': ['src/angular-daterangepicker-enhanced.js']
+             'dist/ng-datepicker.min.js': ['src/ng-datepicker.js'],
+             'dist/template.min.js': ['src/template.js']
           }
        }
      }
