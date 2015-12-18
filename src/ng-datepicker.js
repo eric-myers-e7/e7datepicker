@@ -38,7 +38,7 @@
     this.setDate = function(date) {
       this.viewDate = date.clone();
       this.updateSelectValues(date);
-    }
+    };
 
     this.reset = function() {
       if (moment.isMoment(this.selected)) {
@@ -49,7 +49,7 @@
 
       this.updateSelectValues();
       $scope.$apply();
-    }
+    };
 
     this.updateSelectValues = function(date) {
       date = date || this.viewDate;
@@ -149,7 +149,7 @@
     this.id = 'dateCtrl';
     this.selectedDate = {};
     this.viewDate = {};
-    this.options = {}
+    this.options = {};
 
     this.isHighlighted = function(day) {
       //if range select all between range
@@ -161,15 +161,15 @@
 
     this.hasRanges = function() {
       return (this.options.ranges && this.options.ranges.length > 0);
-    }
+    };
 
     this.isRange = function() {
       return this.options.range;
-    }
+    };
 
     this.setup = function(options) {
       this.options = options;
-    }
+    };
   }
 
   angular.module('ngdatepicker', [])
@@ -200,7 +200,6 @@
           });
 
           dateCtrl.selectStart = function(date) {
-            $log.info('date', date);
             if (!moment.isMoment(date)) {
               throw "selected date must be a moment instance not " + typeof date;
             }
@@ -242,10 +241,8 @@
             if (dateCtrl.options.range === true && moment.isMoment(dateCtrl.selectedDate.start)) {
               input.val(dateCtrl.selectedDate.format(getFormat()));
             } else if (moment.isMoment(modelCtrl.$viewValue)) {
-              $log.info('render', modelCtrl.$viewValue);
               dateCtrl.selectedDate = modelCtrl.$viewValue.clone();
               input.val(modelCtrl.$viewValue.format(getFormat()));
-              modelCtrl
             } else if (moment.isMoment(modelCtrl.$modelValue)) {
               input.val(modelCtrl.$modelValue.format(getFormat()));
               dateCtrl.selectedDate = modelCtrl.$modelValue;
@@ -260,7 +257,7 @@
                 input.val(date.format(getFormat()));
               }
             }
-          }
+          };
 
           var getFormat = function(date) {
             var format = dateCtrl.options.format;
@@ -268,7 +265,7 @@
               format += ' ' + dateCtrl.options.timeFormat;
             }
             return format;
-          }
+          };
         }
       };
     }])
@@ -402,7 +399,7 @@
 
     this.options = function() {
       return options;
-    }
+    };
 
     this.show = function() {
       if (isShowing) return;
