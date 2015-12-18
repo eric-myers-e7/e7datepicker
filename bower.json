@@ -1,12 +1,12 @@
 {
-  "name": "ng-daterangepicker",
+  "name": "e7datepicker",
   "version": "0.1",
-  "homepage": "https://github.com/eric-myers-e7/ng-daterangepicker",
-  "main": "src/angular-daterangepicker-enhanced.js",
+  "homepage": "https://github.com/eric-myers-e7/e7datepicker.git",
+  "main": "src/e7datepicker.js",
   "authors": [
     "Eric Myers <emyers@e7solutions.com>"
   ],
-  "description": "Angular.js wrapper for Dan Grosmann's bootstrap date range picker based on work by fragaria and martindalec.",
+  "description": "angular datepicker directive",
   "license": "MIT",
   "private": false,
   "ignore": [
