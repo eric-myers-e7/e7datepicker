@@ -1,18 +1,21 @@
-angular.module('ng-daterangepicker', [])
+(function() {
+  'use strict';
 
-.run(['$templateCache', function($templateCache) {
-  $templateCache.put('ngdatetimepicker/datepicker.html', '<div id="datepicker-{{ name }}" class="datepicker dropdown-menu">\n' +
-      '<div class="calendar left">\n' +
+  angular.module('ng-daterangepicker', [])
+
+  .run(['$templateCache', function($templateCache) {
+    $templateCache.put('ngdatetimepicker/datepicker.html', '<div id="datepicker-{{ name }}" class="datepicker dropdown-menu">' +
+      '<div class="calendar left">' +
       '<ng-calendar options="dateCtrl.options" name="{{ name }}-left"  ng-model="dateCtrl.leftDate"  hightlight-callback="dateCtrl.isActive(day)"></ng-calendar>' +
-      '</div>\n' +
-      '<div class="calendar right" ng-show="dateCtrl.isRange()">\n' +
+      '</div>' +
+      '<div class="calendar right" ng-show="dateCtrl.isRange()">' +
       '<ng-calendar options="dateCtrl.options" name="{{ name }}-right" ng-model="dateCtrl.rightDate" highlight-callback="dateCtrl.isActive(day)"></ng-calendar>' +
-      '</div>\n' +
-      '<div class="range_inputs" ng-show="dateCtrl.hasRanges() && dateCtrl.isRange()">\n' +
+      '</div>' +
+      '<div class="range_inputs" ng-show="dateCtrl.hasRanges() && dateCtrl.isRange()">' +
       '<ul  ng-repeat=" range in dateCtrl.options.ranges"><li ng-click="dateCtrl.selectRange(range)">{{ range.name }}</li></ul>' +
-      '<button class="applyBtn" disabled="disabled" type="button" ng-click="dateCtrl.apply()"></button> \n' +
-      '<button class="cancelBtn" type="button" ng-click="dateCtrl.cancel()"></button>\n' +
-      '</div>\n' +
+      '<button class="applyBtn" disabled="disabled" type="button" ng-click="dateCtrl.apply()"></button> ' +
+      '<button class="cancelBtn" type="button" ng-click="dateCtrl.cancel()"></button>' +
+      '</div>' +
       '</div>');
 
     $templateCache.put('ngdatetimepicker/timepicker.html', '<div class="popover clockpicker-popover">' +
@@ -62,4 +65,5 @@ angular.module('ng-daterangepicker', [])
       '</tbody>' +
       '</table></>'
     );
-}]);
+  }]);
+})();

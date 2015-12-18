@@ -1,44 +1,3 @@
-/**
-    * options: 
-     { namespace: input.name,  "namespace for fired events"
-       date: { "date specific options"
-         limit: { "defines valid range of dates"
-           start, "string or moment object"
-           end    "string or moment object"
-           },
-         ranges: [ "series of preset ranges that can be selected"
-           {
-              start, "string or moment object"
-              end    "string or moment object"
-           },...  
-          }],
-         autoclose: true, "close the dialog on date selection"
-         military: false, "whether or not to use military time"
-         corner: bottom-left,  "which corner should the datepicker render from, " 
-         dropdowns: false, "boolean value whether the month year should be drop downs",
-         exclusionCallback:  function (date) {} "function returning boolean that will limit specific dates.  
-                              Receives date in iteration as yyyy-mm-dd"       }
-         locale: {
-           format: 'MM/DD/YYYY',  "format of the date display"
-           ranges: 'Custom Ranges',  "title of the custom ranges section"
-           monthsShort: moment.monthsShort(), "array of short names of the months"
-           weekDaysMin: moment.weekdaysMin(), "array of short names of the week"
-           dayOfWeek: 1, first day of week,
-           done: 'Done' 
-         }
-       }
-       time: {
-         autoclose: true, "close the dialog on date selection"
-         military: false, "whether or not to use military time"
-         corner: bottom-left,  "which corner should the datepicker render from, " 
-         locale: {
-           done: 'Done', "text is done",
-           morning: 'AM', 
-           afternoon: 'PM'
-         }
-       }
-     } 
-    */
 (function() {
   'use strict';
 
@@ -430,7 +389,7 @@
         time: false,
         timeFormat: 'HH:mm:ss',
         format: 'YYYY/MM/DD',
-        position: 'bottomright',
+        position: 'bottomleft',
         dateSelect: true,
         daysOfWeek: moment.weekdaysShort(),
         months: moment.months(),
@@ -489,24 +448,28 @@
       if (options.position.substr(0, 3) === 'top') {
         offset = 3
       }
+      console.log('offset', options.position.substr(offset));
       switch (options.position.substr(offset)) {
         case 'left':
+          //console.log('left', input..offset().left);
           pos = {
-            right: popover.offset().left <= 0 ? 'auto' : angular.element($window).width() - input.offset().left - input.outerWidth(),
-            left: popover.offset().left <= 0 ? 9 : 'auto'
+            right: 'auto',
+            left: input.offset().left
           };
+          console.log('ps', pos);
           break;
         case 'center':
           pos = {
-            left: popover.offset().left <= 0 ? 9 : input.offset().left + input.outerWidth() / 2 - popover.outerWidth() / 2,
+            left: ((input.outerWidth())/2 - (popover.outerWidth()/2)) + (input.outerWidth() - input.innerWidth())  + input.offset().left
           };
           break;
         default:
+        console.log('right');
           var containerPastRight = popover.offset().left + popover.outerWidth() > angular.element($window).width();
           console.log(containerPastRight);
           pos = {
             left: containerPastRight ? 'auto' : input.offset().left + (input.outerWidth() - popover.outerWidth()),
-
+            right: containerPastRight ? 0: 'auto'
           };
           if (containerPastRight) {
             pos.right = 0;
@@ -516,10 +479,12 @@
     }.bind(this);
 
     var vertical = function() {
+      popover.addClass('dropup');
       var top = input.offset().top - popover.outerHeight();
       var tooLow = (input.offset().top + input.outerHeight() + popover.outerHeight()) > angular.element($window).innerHeight();
       var tooHigh = (input.offset().top - popover.outerHeight()) < 0;
       if ((options.position.substr(0, 6) === 'bottom' && !tooLow) || tooHigh) {
+        popover.removeClass('dropup');
         top = input.offset().top + input.outerHeight();
       }
       return top;
