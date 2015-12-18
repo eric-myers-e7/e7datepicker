@@ -1,3 +1,3 @@
-# ng-daterangepicker
+# e7datepicker
 
 Coming Soon
