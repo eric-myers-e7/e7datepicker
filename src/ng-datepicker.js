@@ -446,17 +446,15 @@
       var pos = {};
       var offset = 6;
       if (options.position.substr(0, 3) === 'top') {
-        offset = 3
+        offset = 3;
       }
-      console.log('offset', options.position.substr(offset));
+
       switch (options.position.substr(offset)) {
         case 'left':
-          //console.log('left', input..offset().left);
           pos = {
             right: 'auto',
             left: input.offset().left
           };
-          console.log('ps', pos);
           break;
         case 'center':
           pos = {
@@ -464,9 +462,7 @@
           };
           break;
         default:
-        console.log('right');
           var containerPastRight = popover.offset().left + popover.outerWidth() > angular.element($window).width();
-          console.log(containerPastRight);
           pos = {
             left: containerPastRight ? 'auto' : input.offset().left + (input.outerWidth() - popover.outerWidth()),
             right: containerPastRight ? 0: 'auto'
