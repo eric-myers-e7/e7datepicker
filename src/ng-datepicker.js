@@ -173,7 +173,7 @@
   }
 
   angular.module('e7datepicker', [])
-    .directive('e7datepicker', ['$templateCache', '$compile', '$window', '$log', function($templateCache, $compile, $window, $log) {
+    .directive('e7datepicker', function($templateCache, $compile, $window, $log) {
       return {
         require: ['ngModel'],
         restrict: 'A',
@@ -268,9 +268,9 @@
           };
         }
       };
-    }])
+    })
 
-  .directive('ngCalendar', ['$templateCache', '$compile', '$window', '$log', '$parse', function($templateCache, $compile, $window, $log, $parse) {
+  .directive('ngCalendar', function($templateCache, $compile, $window, $log, $parse) {
     return {
       restrict: 'E',
       priority: 1,
@@ -311,7 +311,7 @@
         });
       }
     };
-  }]);
+  });
 
   function DatePicker(input, popover, options, $window, scope) {
     options = angular.extend({

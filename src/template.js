@@ -3,7 +3,7 @@
 
   angular.module('e7datepicker')
 
-  .run(['$templateCache', function($templateCache) {
+  .run(function($templateCache) {
      $templateCache.put('ngdatetimepicker/datepicker.html', '<div id="datepicker-{{ name }}" class="datepicker dropdown-menu">\n' +
       '<div class="calendar left">\n' +
       '<ng-calendar options="dateCtrl.options" name="{{ name }}-left" select-callback="dateCtrl.selectStart(date)" date-selected="dateCtrl.leftDate"  highlight-callback="dateCtrl.isActive(day)"></ng-calendar>' +
@@ -65,5 +65,5 @@
       '</tbody>' +
       '</table></>'
     );
-  }]);
+  });
 })();
