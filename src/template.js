@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  angular.module('ngdatepicker', [])
+  angular.module('e7datepicker')
 
   .run(['$templateCache', function($templateCache) {
      $templateCache.put('ngdatetimepicker/datepicker.html', '<div id="datepicker-{{ name }}" class="datepicker dropdown-menu">\n' +
