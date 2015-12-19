@@ -1,6 +1,6 @@
 {
   "name": "e7datepicker",
-  "version": "0.1",
+  "version": "0.2",
   "description": "Date picker for angular",
   "main": "Gruntfile.js",
   "scripts": {
