@@ -19,7 +19,8 @@ module.exports = function(grunt) {
        options: {
           preserveComments: 'some',
           report: 'min',
-		  sourceMap: true
+          mangle: false,
+		      sourceMap: true
        },
        dist: {
           files: {
