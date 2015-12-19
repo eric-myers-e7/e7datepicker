@@ -1,10 +1,10 @@
 (function() {
   'use strict';
 
-  angular.module('e7datepicker', [])
+  angular.module('ngdatepicker', [])
 
   .run(['$templateCache', function($templateCache) {
-     $templateCache.put('e7datetimepicker/datepicker.html', '<div id="datepicker-{{ name }}" class="datepicker dropdown-menu">\n' +
+     $templateCache.put('ngdatetimepicker/datepicker.html', '<div id="datepicker-{{ name }}" class="datepicker dropdown-menu">\n' +
       '<div class="calendar left">\n' +
       '<ng-calendar options="dateCtrl.options" name="{{ name }}-left" select-callback="dateCtrl.selectStart(date)" date-selected="dateCtrl.leftDate"  highlight-callback="dateCtrl.isActive(day)"></ng-calendar>' +
       '</div>\n' +
@@ -18,7 +18,7 @@
       '</div>\n' +
       '</div>');
 
-    $templateCache.put('e7datetimepicker/timepicker.html', '<div class="popover clockpicker-popover">' +
+    $templateCache.put('ngdatetimepicker/timepicker.html', '<div class="popover clockpicker-popover">' +
       '<div class="arrow"></div>' +
       '<div class="popover-title">' +
       '<span class="clockpicker-span-hours text-primary"></span>' +
@@ -38,7 +38,7 @@
       '</div>'
     );
 
-    $templateCache.put('e7datetimepicker/calendar.html',
+    $templateCache.put('ngdatetimepicker/calendar.html',
       '<div class="calendar-table"><table class="table-condensed">' +
       '<thead>' +
       '<tr>' +

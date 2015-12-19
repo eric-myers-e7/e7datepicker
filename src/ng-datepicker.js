@@ -172,15 +172,15 @@
     };
   }
 
-  angular.module('e7datepicker', [])
-    .directive('e7datepicker', ['$templateCache', '$compile', '$window', '$log', function($templateCache, $compile, $window, $log) {
+  angular.module('ngdatepicker', [])
+    .directive('ngdatepicker', ['$templateCache', '$compile', '$window', '$log', function($templateCache, $compile, $window, $log) {
       return {
         require: ['ngModel'],
         restrict: 'A',
         controller: DatePickerController,
         controllerAs: 'dateCtrl',
         scope: {
-          name: '@e7datepicker',
+          name: '@ngdatepicker',
           options: '@'
         },
         link: function(scope, element, attr, ctrl) {
@@ -189,13 +189,13 @@
           var dateCtrl = scope.dateCtrl;
           var input = element;
 
-          var popover = angular.element($compile($templateCache.get('e7datetimepicker/datepicker.html'))(scope));
+          var popover = angular.element($compile($templateCache.get('ngdatetimepicker/datepicker.html'))(scope));
 
           popover.appendTo('body');
 
           var datepicker = new DatePicker(input, popover, scope.options, $window, scope);
           dateCtrl.setup(datepicker.options());
-          input.on('click.e7datepicker', function() {
+          input.on('click.ngdatepicker', function() {
             datepicker.show();
           });
 
@@ -274,7 +274,7 @@
     return {
       restrict: 'E',
       priority: 1,
-      templateUrl: 'e7datetimepicker/calendar.html',
+      templateUrl: 'ngdatetimepicker/calendar.html',
       controller: CalendarController,
       controllerAs: 'calCtrl',
       scope: {
@@ -347,8 +347,8 @@
 
     this.hide = function() {
       if (!this.isShowing) return;
-      angular.element($window).off('.e7datepicker');
-      angular.element($window.document).off('e7datepicker');
+      angular.element($window).off('.ngdatepicker');
+      angular.element($window.document).off('ngdatepicker');
       popover.hide();
 
       this.isShowing = false;
@@ -423,11 +423,11 @@
     var init = function() {
       this.position();
       // Reposition the picker if the window is resized while it's open
-      $(window).on('resize.e7datepicker', $.proxy(function(e) {
+      $(window).on('resize.ngdatepicker', $.proxy(function(e) {
         this.position(e);
       }, this));
 
-      angular.element($window.document).on('focusin.e7datepicker click.e7datepicker mousedown.e7datepicker touchend.e7datepicker mouseup.e7datepicker [data-toggle=dropdown]',
+      angular.element($window.document).on('focusin.ngdatepicker click.ngdatepicker mousedown.ngdatepicker touchend.ngdatepicker mouseup.ngdatepicker [data-toggle=dropdown]',
         $.proxy(function(e) {
           var target = angular.element(e.target);
 
