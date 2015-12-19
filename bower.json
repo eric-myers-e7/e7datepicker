@@ -1,6 +1,6 @@
 {
   "name": "e7datepicker",
-  "version": "0.2",
+  "version": "0.3",
   "homepage": "https://github.com/eric-myers-e7/e7datepicker.git",
   "main": "src/e7datepicker.js",
   "authors": [
