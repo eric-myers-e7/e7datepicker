@@ -1,6 +1,7 @@
 .datepicker {
   background: #fff;
   position:absolute;
+  z-index:15000;
 }
 
 .datepicker .calendar {
@@ -15,9 +16,9 @@
 .datepicker .calendar th, .datepicker .calendar td {
   white-space: nowrap;
   text-align: center;
-  min-width: 22px;
-  font-size:11px;
-  padding:0px;
+  min-width:22px;
+  min-height:22px;
+  background-color:#fff;
 }
 
 .datepicker .calendar-table {
@@ -34,8 +35,6 @@
 
 .datepicker td, .datepicker th {
   text-align: center;
-  width: 20px;
-  height: 20px;
   border-radius: 4px;
   white-space: nowrap;
   cursor: pointer;
@@ -46,16 +45,16 @@
   background: #fff;
 }
 
-.datepicker .weekend {
+.datepicker td.weekend {
   color: #5aa;
 }
 
-.datepicker .today {
+.datepicker td.today {
   color:#000;
   background:#ddf;
 }
 
-.datepicker .current{
+.datepicker td.current{
   color:#fff;
   background:#88f;
   border-radius:4em;
@@ -75,7 +74,6 @@
 }
 
 .datepicker .year {
-  width:40px;
+  width:5em;
   margin:0px auto;
 }
-
