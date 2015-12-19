@@ -1,24 +1,24 @@
 (function() {
   'use strict';
 
-  angular.module('ng-daterangepicker', [])
+  angular.module('e7datepicker', [])
 
   .run(['$templateCache', function($templateCache) {
-    $templateCache.put('ngdatetimepicker/datepicker.html', '<div id="datepicker-{{ name }}" class="datepicker dropdown-menu">' +
-      '<div class="calendar left">' +
-      '<ng-calendar options="dateCtrl.options" name="{{ name }}-left"  ng-model="dateCtrl.leftDate"  hightlight-callback="dateCtrl.isActive(day)"></ng-calendar>' +
-      '</div>' +
-      '<div class="calendar right" ng-show="dateCtrl.isRange()">' +
-      '<ng-calendar options="dateCtrl.options" name="{{ name }}-right" ng-model="dateCtrl.rightDate" highlight-callback="dateCtrl.isActive(day)"></ng-calendar>' +
-      '</div>' +
-      '<div class="range_inputs" ng-show="dateCtrl.hasRanges() && dateCtrl.isRange()">' +
+     $templateCache.put('e7datetimepicker/datepicker.html', '<div id="datepicker-{{ name }}" class="datepicker dropdown-menu">\n' +
+      '<div class="calendar left">\n' +
+      '<ng-calendar options="dateCtrl.options" name="{{ name }}-left" select-callback="dateCtrl.selectStart(date)" date-selected="dateCtrl.leftDate"  highlight-callback="dateCtrl.isActive(day)"></ng-calendar>' +
+      '</div>\n' +
+      '<div class="calendar right" ng-if="dateCtrl.isRange()">\n' +
+      '<ng-calendar options="dateCtrl.options" name="{{ name }}-right" select-callback="dateCtrl.selectEnd(date)" date-selected="dateCtrl.rightDate" highlight-callback="dateCtrl.isActive(day)"></ng-calendar>' +
+      '</div>\n' +
+      '<div class="range_inputs" ng-show="dateCtrl.hasRanges() && dateCtrl.isRange()">\n' +
       '<ul  ng-repeat=" range in dateCtrl.options.ranges"><li ng-click="dateCtrl.selectRange(range)">{{ range.name }}</li></ul>' +
-      '<button class="applyBtn" disabled="disabled" type="button" ng-click="dateCtrl.apply()"></button> ' +
-      '<button class="cancelBtn" type="button" ng-click="dateCtrl.cancel()"></button>' +
-      '</div>' +
+      '<button class="applyBtn" disabled="disabled" type="button" ng-click="dateCtrl.apply()"></button> \n' +
+      '<button class="cancelBtn" type="button" ng-click="dateCtrl.cancel()"></button>\n' +
+      '</div>\n' +
       '</div>');
 
-    $templateCache.put('ngdatetimepicker/timepicker.html', '<div class="popover clockpicker-popover">' +
+    $templateCache.put('e7datetimepicker/timepicker.html', '<div class="popover clockpicker-popover">' +
       '<div class="arrow"></div>' +
       '<div class="popover-title">' +
       '<span class="clockpicker-span-hours text-primary"></span>' +
@@ -38,7 +38,7 @@
       '</div>'
     );
 
-    $templateCache.put('ngdatetimepicker/calendar.html',
+    $templateCache.put('e7datetimepicker/calendar.html',
       '<div class="calendar-table"><table class="table-condensed">' +
       '<thead>' +
       '<tr>' +

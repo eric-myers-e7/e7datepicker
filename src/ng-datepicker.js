@@ -172,15 +172,15 @@
     };
   }
 
-  angular.module('ngdatepicker', [])
-    .directive('ngdatepicker', ['$templateCache', '$compile', '$window', '$log', function($templateCache, $compile, $window, $log) {
+  angular.module('e7datepicker', [])
+    .directive('e7datepicker', ['$templateCache', '$compile', '$window', '$log', function($templateCache, $compile, $window, $log) {
       return {
         require: ['ngModel'],
         restrict: 'A',
         controller: DatePickerController,
         controllerAs: 'dateCtrl',
         scope: {
-          name: '@ngdatepicker',
+          name: '@e7datepicker',
           options: '@'
         },
         link: function(scope, element, attr, ctrl) {
@@ -189,13 +189,13 @@
           var dateCtrl = scope.dateCtrl;
           var input = element;
 
-          var popover = angular.element($compile($templateCache.get('ngdatetimepicker/datepicker.html'))(scope));
+          var popover = angular.element($compile($templateCache.get('e7datetimepicker/datepicker.html'))(scope));
 
           popover.appendTo('body');
 
           var datepicker = new DatePicker(input, popover, scope.options, $window, scope);
           dateCtrl.setup(datepicker.options());
-          input.on('click.ngdatepicker', function() {
+          input.on('click.e7datepicker', function() {
             datepicker.show();
           });
 
@@ -274,7 +274,7 @@
     return {
       restrict: 'E',
       priority: 1,
-      templateUrl: 'ngdatetimepicker/calendar.html',
+      templateUrl: 'e7datetimepicker/calendar.html',
       controller: CalendarController,
       controllerAs: 'calCtrl',
       scope: {
@@ -311,69 +311,6 @@
         });
       }
     };
-  }]).run(['$templateCache', function($templateCache) {
-
-    $templateCache.put('ngdatetimepicker/datepicker.html', '<div id="datepicker-{{ name }}" class="datepicker dropdown-menu">\n' +
-      '<div class="calendar left">\n' +
-      '<ng-calendar options="dateCtrl.options" name="{{ name }}-left" select-callback="dateCtrl.selectStart(date)" date-selected="dateCtrl.leftDate"  highlight-callback="dateCtrl.isActive(day)"></ng-calendar>' +
-      '</div>\n' +
-      '<div class="calendar right" ng-if="dateCtrl.isRange()">\n' +
-      '<ng-calendar options="dateCtrl.options" name="{{ name }}-right" select-callback="dateCtrl.selectEnd(date)" date-selected="dateCtrl.rightDate" highlight-callback="dateCtrl.isActive(day)"></ng-calendar>' +
-      '</div>\n' +
-      '<div class="range_inputs" ng-show="dateCtrl.hasRanges() && dateCtrl.isRange()">\n' +
-      '<ul  ng-repeat=" range in dateCtrl.options.ranges"><li ng-click="dateCtrl.selectRange(range)">{{ range.name }}</li></ul>' +
-      '<button class="applyBtn" disabled="disabled" type="button" ng-click="dateCtrl.apply()"></button> \n' +
-      '<button class="cancelBtn" type="button" ng-click="dateCtrl.cancel()"></button>\n' +
-      '</div>\n' +
-      '</div>');
-
-    $templateCache.put('ngdatetimepicker/timepicker.html', '<div class="popover clockpicker-popover">' +
-      '<div class="arrow"></div>' +
-      '<div class="popover-title">' +
-      '<span class="clockpicker-span-hours text-primary"></span>' +
-      ' : ' +
-      '<span class="clockpicker-span-minutes"></span>' +
-      '<span class="clockpicker-span-am-pm"></span>' +
-      '</div>' +
-      '<div class="popover-content">' +
-      '<div class="clockpicker-plate">' +
-      '<div class="clockpicker-canvas"></div>' +
-      '<div class="clockpicker-dial clockpicker-hours"></div>' +
-      '<div class="clockpicker-dial clockpicker-minutes clockpicker-dial-out"></div>' +
-      '</div>' +
-      '<span class="clockpicker-am-pm-block">' +
-      '</span>' +
-      '</div>' +
-      '</div>'
-    );
-
-    $templateCache.put('ngdatetimepicker/calendar.html',
-      '<div class="calendar-table"><table class="table-condensed">' +
-      '<thead>' +
-      '<tr>' +
-      '<th class="prev available" ng-click="calCtrl.jogYear(-1)"> <i class="{{ options.yearLeftIcon }}"></i></th>' +
-      '<th class="prev available" ng-click="calCtrl.jogMonth(-1)"><i class="{{ options.monthLeftIcon }}"></i></th>' +
-      '<th ng-show="calCtrl.options.dateSelect" style="text-align:center;" colspan="3" class="month">' +
-      '<select name="datepicker-month" class="form-control" ng-model="calCtrl.month" ng-options="o for o in options.months"></select>' +
-      '<select name="datepicker-year" class="form-control year" ng-model="calCtrl.year" ng-options="o for o in options.years "></select></th>' +
-      '<th ng-hide="calCtrl.options.dateSelect" style="text-align:center;" colspan="3" class="month">{{ calCtrl.viewDate.format(\'MMMM\') }}<br>' +
-      '{{ calCtrl.viewDate.format(\'YYYY\') }}</th>' +
-      '<th class="next available" ng-click="calCtrl.jogMonth(1)"><i class="{{ options.monthRightIcon }}"></i></th>' +
-      '<th class="next available" ng-click="calCtrl.jogYear(1)"><i class="{{ options.yearRightIcon }}"></i></th>' +
-      '</tr>' +
-      '<tr>' +
-      '<th ng-repeat="day in options.daysOfWeek" >{{ day }}</th>' +
-      '</tr>' +
-      '</thead>' +
-      '<tbody>' +
-      '<tr ng-repeat="week in calCtrl.calendar">' +
-      '<td ng-click="calCtrl.select(day)" ng-class="{\'highlight\': calCtrl.doHighlight(day), \'today\': calCtrl.isToday(day),' +
-      '\'weekend\': calCtrl.isWeekend(day), \'off\': !calCtrl.isCurrentMonth(day), \'current\': calCtrl.isSelected(day)  }"' +
-      'ng-repeat="day in week" data-title="r{{ $parent.$index }}c{{ $index }}">{{ day.date() }}</td>' +
-      '</tr>' +
-      '</tbody>' +
-      '</table></>'
-    );
   }]);
 
   function DatePicker(input, popover, options, $window, scope) {
@@ -410,8 +347,8 @@
 
     this.hide = function() {
       if (!this.isShowing) return;
-      angular.element($window).off('.ngdatepicker');
-      angular.element($window.document).off('ngdatepicker');
+      angular.element($window).off('.e7datepicker');
+      angular.element($window.document).off('e7datepicker');
       popover.hide();
 
       this.isShowing = false;
@@ -486,11 +423,11 @@
     var init = function() {
       this.position();
       // Reposition the picker if the window is resized while it's open
-      $(window).on('resize.ngdatepicker', $.proxy(function(e) {
+      $(window).on('resize.e7datepicker', $.proxy(function(e) {
         this.position(e);
       }, this));
 
-      angular.element($window.document).on('focusin.ngdatepicker click.ngdatepicker mousedown.ngdatepicker touchend.ngdatepicker mouseup.ngdatepicker [data-toggle=dropdown]',
+      angular.element($window.document).on('focusin.e7datepicker click.e7datepicker mousedown.e7datepicker touchend.e7datepicker mouseup.e7datepicker [data-toggle=dropdown]',
         $.proxy(function(e) {
           var target = angular.element(e.target);
 
