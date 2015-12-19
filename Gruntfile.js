@@ -17,10 +17,7 @@ module.exports = function(grunt) {
     },
     uglify: {
        options: {
-          preserveComments: 'some',
-          report: 'min',
-          mangle: false,
-		      sourceMap: true
+		      sourceMap: false
        },
        dist: {
           files: {
