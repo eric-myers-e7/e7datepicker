@@ -241,6 +241,10 @@
             } else if (moment.isMoment(modelCtrl.$viewValue)) {
               dateCtrl.selectedDate = modelCtrl.$viewValue.clone();
               input.val(modelCtrl.$viewValue.format(getFormat()));
+            } else if (modelCtrl.$isEmpty(modelCtrl.$modelValue)) {
+              dateCtrl.selectedDate = null;
+              dateCtrl.leftDate = null;
+              input.val('');
             } else if (moment.isMoment(modelCtrl.$modelValue)) {
               input.val(modelCtrl.$modelValue.format(getFormat()));
               dateCtrl.selectedDate = modelCtrl.$modelValue;
