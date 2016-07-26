@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CalendarController($scope, $element, $attrs, $transclude, $log) {
+  function CalendarController($scope, $element, $attrs, $transclude, $log, $timeout) {
     this.id = 'calCtrl';
     this.selected = null;
     this.today = moment();
@@ -46,9 +46,7 @@
       } else {
         this.viewDate = moment();
       }
-
-      this.updateSelectValues();
-      $scope.$apply();
+      $timeout (this.updateSelectValues);
     };
 
     this.updateSelectValues = function(date) {
