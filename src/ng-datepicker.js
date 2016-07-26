@@ -220,6 +220,9 @@
           };
 
           modelCtrl.$parsers.push(function(value) {
+            if(modelCtrl.$isEmpty(value)) {
+              return value;
+            }
             if (!moment.isMoment(value)) {
               var date = moment(value, getFormat(), true);
               if (date.isValid()) {
