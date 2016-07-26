@@ -46,7 +46,7 @@
       } else {
         this.viewDate = moment();
       }
-      $timeout (this.updateSelectValues);
+      $timeout (function () { this.updateSelectValues() }.bind(this));
     };
 
     this.updateSelectValues = function(date) {
